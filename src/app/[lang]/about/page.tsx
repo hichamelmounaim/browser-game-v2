@@ -88,7 +88,7 @@ export default async function AboutPage({ params }: Props) {
   const localizedContent = content[lang as "en" | "fr" | "es"] || content.en;
 
   return (
-    <div className="poki-lowpoly min-h-screen flex flex-col justify-between">
+    <div className="portal-lowpoly min-h-screen flex flex-col justify-between">
       <div>
         <Navbar siteSettings={siteSettings} lang={lang} />
         

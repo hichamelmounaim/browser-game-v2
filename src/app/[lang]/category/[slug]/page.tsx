@@ -123,7 +123,7 @@ export default async function CategoryPage({ params }: Props) {
   categoryName = categoryName.charAt(0).toUpperCase() + categoryName.slice(1);
 
   return (
-    <div className="poki-lowpoly min-h-screen flex flex-col justify-between">
+    <div className="portal-lowpoly min-h-screen flex flex-col justify-between">
       <div>
         <Navbar siteSettings={siteSettings} lang={lang} />
         
@@ -138,7 +138,7 @@ export default async function CategoryPage({ params }: Props) {
             <span className="text-gray-900 font-bold">{categoryName} {t.gamesAvailable.split(' ')[0]}</span>
           </div>
 
-          {/* Category Header (Poki Style Card) */}
+          {/* Category Header (Portal Style Card) */}
           <div className="bg-white/95 backdrop-blur-md rounded-3xl p-6 md:p-8 border border-white shadow-sm flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
             <div className="max-w-2xl text-left">
               <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-3 tracking-tight">
@@ -208,7 +208,7 @@ export default async function CategoryPage({ params }: Props) {
                 )}
               </div>
 
-              {/* Popular Games List (Poki style table) */}
+              {/* Popular Games List (Portal style table) */}
               <div className="bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-white shadow-sm h-fit">
                 <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
                   <span className="material-symbols-outlined text-teal-600">trending_up</span>

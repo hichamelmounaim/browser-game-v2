@@ -101,8 +101,8 @@
   scrollbar-width: none;
 }
 
-/* Poki-inspired Low-Poly Background and Copywriting styles */
-.poki-lowpoly {
+/* Portal Low-Poly Background and Copywriting styles */
+.portal-lowpoly {
   background-color: #e6fafb;
   background-image: 
     linear-gradient(30deg, #d2f4f6 12%, transparent 12.5%, transparent 87%, #d2f4f6 87.5%, #d2f4f6),
