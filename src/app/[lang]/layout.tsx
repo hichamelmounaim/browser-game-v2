@@ -41,6 +41,11 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
     title: t.seoTitle.replace('Gamecis.com', settings.site_name),
     description: t.seoDescription.replace('Gamecis.com', settings.site_name),
     verification,
+    icons: {
+      icon: '/favicon.png',
+      shortcut: '/favicon.png',
+      apple: '/favicon.png',
+    },
   };
 }
 

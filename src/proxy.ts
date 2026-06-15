@@ -42,10 +42,11 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
-     * - logo.jpg (logo)
+     * - favicon.png (favicon png)
+     * - logo.png (logo)
      * - sitemap.xml
      * - robots.txt
      */
-    '/((?!api|_next/static|_next/image|favicon.ico|logo.jpg|sitemap.xml|robots.txt|ads.txt|sitemap.xsl).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|favicon.png|logo.png|sitemap.xml|robots.txt|ads.txt|sitemap.xsl).*)',
   ],
 };

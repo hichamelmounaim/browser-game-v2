@@ -120,3 +120,4 @@ export function getSiteSettings(): SiteSettings {
     site_logo: ''
   };
 }
+// trigger reload

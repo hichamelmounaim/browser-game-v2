@@ -76,7 +76,7 @@ export async function generateStaticParams() {
 export default async function GamePage({ params }: Props) {
   const resolvedParams = await params;
   const lang = resolvedParams.lang || 'en';
-  const game = getGameBySlug(resolvedParams.slug);
+  const game: any = getGameBySlug(resolvedParams.slug);
   const siteSettings = getSiteSettings();
   const t = getTranslation(lang);
 
@@ -90,14 +90,30 @@ export default async function GamePage({ params }: Props) {
   };
 
   let description = game.description;
+  let short_description = game.short_description;
+  let controls = game.controls;
   if (lang === 'fr') {
     description = game.description_fr || description;
+    short_description = game.short_description_fr || short_description;
+    controls = game.controls_fr || controls;
   } else if (lang === 'es') {
     description = game.description_es || description;
+    short_description = game.short_description_es || short_description;
+    controls = game.controls_es || controls;
   }
 
   const displayTitle = lang === 'fr' ? game.title_fr || game.title : lang === 'es' ? game.title_es || game.title : game.title;
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://gamecis.com';
+
+  const allGames = getAllGames();
+  const recommendedGames = allGames.filter((g: any) => g.id !== game.id).sort(() => Math.random() - 0.5).slice(0, 48);
+  const sidebarGames = allGames.filter((g: any) => g.id !== game.id).sort(() => Math.random() - 0.5).slice(0, 10);
+  const developerGames = allGames.filter((g: any) => g.developer === game.developer && g.id !== game.id).slice(0, 4);
+  // Fill empty developer games if none found
+  if (developerGames.length < 4) {
+    const extraGames = allGames.filter((g: any) => g.id !== game.id && !developerGames.find((d: any) => d.id === g.id)).slice(0, 4 - developerGames.length);
+    developerGames.push(...extraGames);
+  }
 
   return (
     <>
@@ -124,20 +140,20 @@ export default async function GamePage({ params }: Props) {
       />
       <Navbar siteSettings={siteSettings} lang={lang} />
       
-      <main className="max-w-[1440px] mx-auto px-6 py-8">
+      <main className="max-w-[1440px] mx-auto px-4 sm:px-6 py-6 sm:py-8">
         
         {/* Navigation Breadcrumb */}
-        <div className="mb-6">
-          <Link href={`/${lang}`} className="text-primary font-bold text-xs hover:underline flex items-center gap-1">
+        <div className="mb-4">
+          <Link href={`/${lang}`} className="text-primary font-bold text-xs hover:underline flex items-center gap-1 w-fit">
             <span className="material-symbols-outlined text-xs">chevron_left</span> {t.backToCatalog}
           </Link>
         </div>
 
         {/* Responsive layout: Main content on left, sidebar on right */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
           
           {/* Main Area */}
-          <div className="lg:col-span-3 flex flex-col gap-6">
+          <div className="lg:col-span-3 flex flex-col gap-4 w-full overflow-hidden">
             
             {/* Game Screen Player */}
             <GamePlayer 
@@ -146,68 +162,155 @@ export default async function GamePage({ params }: Props) {
               thumbnail={game.thumbnail} 
             />
             
-            {/* Game Info Panel */}
-            <div className="bg-surface-white border border-outline-variant/10 rounded-2xl p-6 md:p-8 shadow-sm">
-              <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6 pb-6 border-b border-outline-variant/20">
-                <div>
-                  <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-on-surface mb-2 leading-none">
-                    {displayTitle}
-                  </h1>
-                  <Link 
-                    href={`/${lang}/category/${getCategorySlug(game.category || 'Uncategorized')}`} 
-                    className="inline-block bg-primary-container/15 text-primary text-xs font-bold px-3 py-1.5 rounded-full hover:bg-primary-container/25 transition-all"
-                  >
-                    {game.category || 'Uncategorized'}
-                  </Link>
-                </div>
-                
-                <div className="flex items-center gap-4 flex-wrap text-sm">
-                  <span className="text-secondary-fixed-dim font-bold text-lg flex items-center gap-1">
-                    ★ {game.rating.toFixed(1)}
-                  </span>
-                  <button className="flex items-center gap-1 px-4 py-2 border border-outline-variant/40 rounded-xl text-xs font-bold hover:bg-surface-container transition-all">
-                    ❤️ {t.favorite}
-                  </button>
-                  <button className="flex items-center gap-1 px-4 py-2 border border-outline-variant/40 rounded-xl text-xs font-bold hover:bg-surface-container transition-all">
-                    ⤴️ {t.share}
-                  </button>
-                </div>
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 bg-surface-white border border-outline-variant/10 rounded-2xl p-4 shadow-sm w-full">
+              <div className="flex items-center gap-4">
+                 <img src={game.thumbnail} alt={displayTitle} className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl object-cover" />
+                 <div>
+                   <h1 className="text-lg sm:text-xl font-extrabold tracking-tight text-on-surface leading-none">
+                     {displayTitle}
+                   </h1>
+                   <div className="text-xs text-on-surface-variant mt-1">by {game.developer || "Z & K Games"}</div>
+                 </div>
               </div>
-
-              {/* Game About Description */}
-              <div className="prose prose-sm max-w-none text-on-surface-variant font-medium leading-relaxed">
-                <div className="flex items-center gap-3 mb-3">
-                  <h3 className="text-lg font-bold text-on-surface m-0">{t.about} {displayTitle}</h3>
-                  {game.description_source && (
-                    <span className="inline-flex items-center bg-surface-container-high text-on-surface-variant text-[10px] font-bold px-2.5 py-1 rounded-md border border-outline-variant/30 select-none">
-                      🏷️ {t.descriptionFromPoki}
-                    </span>
-                  )}
-                </div>
-                <p className="whitespace-pre-line">{description || 'No description available for this game.'}</p>
+              <div className="flex items-center gap-4 sm:gap-6 text-sm font-bold text-on-surface-variant">
+                  <div className="flex flex-col items-center hover:text-primary cursor-pointer"><span className="material-symbols-outlined text-xl sm:text-2xl">thumb_up</span> 1.5M</div>
+                  <div className="flex flex-col items-center hover:text-red-500 cursor-pointer"><span className="material-symbols-outlined text-xl sm:text-2xl">thumb_down</span> 68.2K</div>
+                  <div className="flex flex-col items-center hover:text-blue-500 cursor-pointer"><span className="material-symbols-outlined text-xl sm:text-2xl">flag</span></div>
               </div>
             </div>
 
+            {/* Grid of recommended games below the player */}
+            <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2 mt-2">
+               {recommendedGames.map((g: any) => (
+                 <Link href={`/${lang}/game/${g.slug}`} key={g.id} className="relative aspect-square rounded-xl overflow-hidden group border border-outline-variant/10 bg-surface-container-low">
+                   <img src={g.thumbnail} alt={g.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
+                 </Link>
+               ))}
+            </div>
+
+            {/* Game Info Panel */}
+            <div className="mt-8 flex flex-col gap-6 w-full lg:max-w-4xl mx-auto">
+              
+              <div className="flex flex-col md:flex-row gap-6 items-start">
+                <img src={game.thumbnail} alt={displayTitle} className="w-full md:w-40 md:h-40 rounded-2xl object-cover shadow-sm hidden md:block" />
+                <div className="flex-1">
+                   <div className="text-[10px] sm:text-xs font-bold text-primary mb-2 uppercase tracking-wider">
+                     <Link href={`/${lang}`} className="hover:underline">GAMES</Link> <span className="text-on-surface-variant/50 mx-1">&gt;</span> <Link href={`/${lang}/category/${getCategorySlug(game.category || 'Uncategorized')}`} className="hover:underline">{game.category || 'UNCATEGORIZED'}</Link>
+                   </div>
+                   <h2 className="text-2xl sm:text-3xl font-extrabold text-on-surface leading-tight">{displayTitle}</h2>
+                   <div className="text-sm font-bold text-on-surface-variant mt-1">by {game.developer || "Z & K Games"}</div>
+                   
+                   <p className="mt-4 text-sm text-on-surface-variant leading-relaxed">
+                     {short_description || "A fun and engaging game to play online directly in your browser. No downloads required."}
+                   </p>
+                </div>
+              </div>
+
+              <div className="prose prose-sm max-w-none text-on-surface-variant font-medium leading-relaxed mt-2">
+                {description && description.includes('<') ? (
+                   <div dangerouslySetInnerHTML={{ __html: description }} className="space-y-4" />
+                ) : (
+                   <p className="whitespace-pre-line">{description || 'No description available for this game.'}</p>
+                )}
+              </div>
+
+              <div className="flex flex-wrap items-center gap-6 sm:gap-10 mt-6 border-t border-outline-variant/20 pt-8 pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-amber-100 flex items-center justify-center text-amber-500"><span className="material-symbols-outlined">star</span></div>
+                  <div>
+                    <div className="text-[10px] sm:text-xs font-bold text-on-surface-variant uppercase tracking-wider">Rating</div>
+                    <div className="text-base sm:text-lg font-extrabold text-on-surface">{game.rating ? game.rating.toFixed(1) : "4.4"}</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-red-100 flex items-center justify-center text-red-500"><span className="material-symbols-outlined">local_fire_department</span></div>
+                  <div>
+                    <div className="text-[10px] sm:text-xs font-bold text-on-surface-variant uppercase tracking-wider">Trending</div>
+                    <div className="text-base sm:text-lg font-extrabold text-on-surface">#20</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-500"><span className="material-symbols-outlined">update</span></div>
+                  <div>
+                    <div className="text-[10px] sm:text-xs font-bold text-on-surface-variant uppercase tracking-wider">Updated</div>
+                    <div className="text-base sm:text-lg font-extrabold text-on-surface">{game.release_date || "Jun 2024"}</div>
+                  </div>
+                </div>
+              </div>
+
+              <h3 className="text-xl font-bold text-on-surface mt-6 border-b border-outline-variant/20 pb-4">About this game</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-0 gap-x-12 text-sm mt-2">
+                <div className="flex justify-between py-4 border-b border-outline-variant/10">
+                  <span className="font-bold text-on-surface flex items-center gap-2"><span className="material-symbols-outlined text-lg opacity-70">sports_esports</span> Controls</span>
+                  <span className="text-on-surface-variant text-right max-w-[50%]">{controls || "Mouse or keyboard"}</span>
+                </div>
+                <div className="flex justify-between py-4 border-b border-outline-variant/10">
+                  <span className="font-bold text-on-surface flex items-center gap-2"><span className="material-symbols-outlined text-lg opacity-70">devices</span> Supported devices</span>
+                  <span className="text-on-surface-variant text-right">{game.supported_devices || "Desktop, phone and tablet"}</span>
+                </div>
+                <div className="flex justify-between py-4 border-b border-outline-variant/10">
+                  <span className="font-bold text-on-surface flex items-center gap-2"><span className="material-symbols-outlined text-lg opacity-70">code</span> Developer</span>
+                  <span className="text-on-surface-variant text-right">{game.developer || "Z & K Games"}</span>
+                </div>
+                <div className="flex justify-between py-4 border-b border-outline-variant/10">
+                  <span className="font-bold text-on-surface flex items-center gap-2"><span className="material-symbols-outlined text-lg opacity-70">category</span> Genre</span>
+                  <span className="text-on-surface-variant text-right">{game.category || "Uncategorized"}</span>
+                </div>
+                <div className="flex justify-between py-4 border-b border-outline-variant/10">
+                  <span className="font-bold text-on-surface flex items-center gap-2"><span className="material-symbols-outlined text-lg opacity-70">event</span> Release Date</span>
+                  <span className="text-on-surface-variant text-right">{game.release_date || "March 2020"}</span>
+                </div>
+                <div className="flex justify-between py-4 border-b border-outline-variant/10">
+                  <span className="font-bold text-on-surface flex items-center gap-2"><span className="material-symbols-outlined text-lg opacity-70">update</span> Latest Update</span>
+                  <span className="text-on-surface-variant text-right">{game.release_date || "Jun 2024"}</span>
+                </div>
+                <div className="flex justify-between py-4 border-b border-outline-variant/10">
+                  <span className="font-bold text-on-surface flex items-center gap-2"><span className="material-symbols-outlined text-lg opacity-70">star</span> Rating</span>
+                  <span className="text-on-surface-variant text-right">{game.rating ? game.rating.toFixed(1) : "4.4"}</span>
+                </div>
+                <div className="flex justify-between py-4 border-b border-outline-variant/10">
+                  <span className="font-bold text-on-surface flex items-center gap-2"><span className="material-symbols-outlined text-lg opacity-70">policy</span> Privacy Policy</span>
+                  <a href={game.privacy_policy || "#"} className="text-primary hover:underline text-right truncate max-w-[200px]">Privacy Policy</a>
+                </div>
+              </div>
+
+              <div className="mt-10">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-on-surface-variant">{t.relatedCategories || "Related categories"}</h3>
+                  <Link href={`/${lang}/categories`} className="text-xs font-bold text-primary hover:underline flex items-center gap-1">SHOW MORE <span className="material-symbols-outlined text-sm">add</span></Link>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Link href={`/${lang}/category/action`} className="text-xs font-bold px-4 py-2.5 bg-surface-container rounded-full hover:bg-primary-container text-on-surface hover:text-primary transition-colors uppercase tracking-wide">ACTION GAMES</Link>
+                  <Link href={`/${lang}/category/funny`} className="text-xs font-bold px-4 py-2.5 bg-surface-container rounded-full hover:bg-primary-container text-on-surface hover:text-primary transition-colors uppercase tracking-wide">FUNNY GAMES</Link>
+                  <Link href={`/${lang}/category/3d`} className="text-xs font-bold px-4 py-2.5 bg-surface-container rounded-full hover:bg-primary-container text-on-surface hover:text-primary transition-colors uppercase tracking-wide">3D GAMES</Link>
+                  <Link href={`/${lang}/categories`} className="text-xs font-bold px-4 py-2.5 text-primary hover:underline transition-colors flex items-center gap-1 uppercase tracking-wide">{t.allGenres || "ALL GAMES"} <span className="material-symbols-outlined text-sm">open_in_new</span></Link>
+                </div>
+              </div>
+
+              <div className="mt-10 mb-8">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-lg font-bold text-on-surface">More games by this developer</h3>
+                  <Link href={`/${lang}/categories`} className="text-xs font-bold text-primary hover:underline flex items-center gap-1">SHOW MORE <span className="material-symbols-outlined text-sm">add</span></Link>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  {developerGames.map((g: any) => (
+                    <Link href={`/${lang}/game/${g.slug}`} key={g.id} className="relative aspect-video sm:aspect-square rounded-2xl overflow-hidden group shadow-sm border border-outline-variant/10">
+                      <img src={g.thumbnail} alt={g.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
           
           {/* Sidebar Area */}
-          <aside className="lg:col-span-1 bg-surface-white border border-outline-variant/10 rounded-2xl p-6 flex flex-col gap-6 shadow-sm min-h-[400px]">
-            <div className="text-center">
-              <span className="text-[10px] uppercase tracking-widest font-extrabold text-on-surface-variant">
-                {t.advertisement}
-              </span>
-              <div className="w-full h-64 bg-surface-container-high rounded-xl border border-dashed border-outline-variant/60 flex items-center justify-center text-on-surface-variant/40 font-bold text-sm tracking-wider mt-3">
-                {t.adSpace}
-              </div>
-            </div>
-            
-            <div className="mt-4">
-              <h4 className="font-bold text-xs uppercase tracking-widest text-on-surface-variant mb-4">{t.relatedCategories}</h4>
-              <div className="flex flex-wrap gap-2">
-                <Link href={`/${lang}/category/arcade`} className="text-xs font-bold px-3 py-1.5 bg-surface-container rounded-lg hover:bg-primary-container hover:text-white transition-colors">Arcade</Link>
-                <Link href={`/${lang}/category/action`} className="text-xs font-bold px-3 py-1.5 bg-surface-container rounded-lg hover:bg-primary-container hover:text-white transition-colors">Action</Link>
-                <Link href={`/${lang}/categories`} className="text-xs font-bold px-3 py-1.5 bg-surface-container rounded-lg hover:bg-primary-container hover:text-white transition-colors">{t.allGenres}</Link>
-              </div>
+          <aside className="lg:col-span-1 flex flex-col gap-2 w-full pt-1 lg:pt-0">
+            <div className="grid grid-cols-4 lg:grid-cols-2 gap-2">
+              {sidebarGames.map((g: any) => (
+                <Link href={`/${lang}/game/${g.slug}`} key={g.id} className="relative aspect-square rounded-xl overflow-hidden group border border-outline-variant/10 bg-surface-container-low">
+                  <img src={g.thumbnail} alt={g.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                </Link>
+              ))}
             </div>
           </aside>
           
