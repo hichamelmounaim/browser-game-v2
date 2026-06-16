@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Footer({ siteSettings, lang = 'en' }: { siteSettings?: { site_name: string; site_logo: string }; lang?: string }) {
   const brandName = siteSettings?.site_name || 'Gamecis';
@@ -10,7 +11,7 @@ export default function Footer({ siteSettings, lang = 'en' }: { siteSettings?: {
         <div className="flex flex-col gap-4 text-left">
           <span className="flex items-center gap-2 font-headline-md text-headline-md font-black text-primary">
             {siteSettings?.site_logo ? (
-              <img src={siteSettings.site_logo} alt={brandName} className="h-10 md:h-12 w-auto object-contain" />
+              <Image src={siteSettings.site_logo} alt={brandName} width={120} height={48} className="h-10 md:h-12 w-auto object-contain" />
             ) : (
               <span>{brandName}</span>
             )}

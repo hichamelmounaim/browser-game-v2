@@ -6,6 +6,7 @@ import { getTranslation } from '@/lib/translations';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 
 type Props = {
   params: Promise<{ slug: string; lang: string }>;
@@ -138,6 +139,35 @@ export default async function GamePage({ params }: Props) {
           })
         }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": `${baseUrl}/${lang}`
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": game.category || 'Uncategorized',
+                "item": `${baseUrl}/${lang}/category/${getCategorySlug(game.category || 'Uncategorized')}`
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": displayTitle,
+                "item": `${baseUrl}/${lang}/game/${game.slug}`
+              }
+            ]
+          })
+        }}
+      />
       <Navbar siteSettings={siteSettings} lang={lang} />
       
       <main className="max-w-[1440px] mx-auto px-4 sm:px-6 py-6 sm:py-8">
@@ -164,7 +194,7 @@ export default async function GamePage({ params }: Props) {
             
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 bg-surface-white border border-outline-variant/10 rounded-2xl p-4 shadow-sm w-full">
               <div className="flex items-center gap-4">
-                 <img src={game.thumbnail} alt={displayTitle} className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl object-cover" />
+                 <Image src={game.thumbnail} alt={displayTitle} width={64} height={64} className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl object-cover" />
                  <div>
                    <h1 className="text-lg sm:text-xl font-extrabold tracking-tight text-on-surface leading-none">
                      {displayTitle}
@@ -183,7 +213,7 @@ export default async function GamePage({ params }: Props) {
             <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2 mt-2">
                {recommendedGames.map((g: any) => (
                  <Link href={`/${lang}/game/${g.slug}`} key={g.id} className="relative aspect-square rounded-xl overflow-hidden group border border-outline-variant/10 bg-surface-container-low">
-                   <img src={g.thumbnail} alt={g.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
+                   <Image src={g.thumbnail} alt={g.title} fill sizes="(max-width: 640px) 25vw, 12vw" className="object-cover group-hover:scale-110 transition-transform" />
                  </Link>
                ))}
             </div>
@@ -192,7 +222,7 @@ export default async function GamePage({ params }: Props) {
             <div className="mt-8 flex flex-col gap-6 w-full lg:max-w-4xl mx-auto">
               
               <div className="flex flex-col md:flex-row gap-6 items-start">
-                <img src={game.thumbnail} alt={displayTitle} className="w-full md:w-40 md:h-40 rounded-2xl object-cover shadow-sm hidden md:block" />
+                <Image src={game.thumbnail} alt={displayTitle} width={160} height={160} className="w-full md:w-40 md:h-40 rounded-2xl object-cover shadow-sm hidden md:block" />
                 <div className="flex-1">
                    <div className="text-[10px] sm:text-xs font-bold text-primary mb-2 uppercase tracking-wider">
                      <Link href={`/${lang}`} className="hover:underline">GAMES</Link> <span className="text-on-surface-variant/50 mx-1">&gt;</span> <Link href={`/${lang}/category/${getCategorySlug(game.category || 'Uncategorized')}`} className="hover:underline">{game.category || 'UNCATEGORIZED'}</Link>
@@ -295,7 +325,7 @@ export default async function GamePage({ params }: Props) {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   {developerGames.map((g: any) => (
                     <Link href={`/${lang}/game/${g.slug}`} key={g.id} className="relative aspect-video sm:aspect-square rounded-2xl overflow-hidden group shadow-sm border border-outline-variant/10">
-                      <img src={g.thumbnail} alt={g.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                      <Image src={g.thumbnail} alt={g.title} fill sizes="(max-width: 640px) 50vw, 25vw" className="object-cover group-hover:scale-110 transition-transform duration-300" />
                     </Link>
                   ))}
                 </div>
@@ -308,7 +338,7 @@ export default async function GamePage({ params }: Props) {
             <div className="grid grid-cols-4 lg:grid-cols-2 gap-2">
               {sidebarGames.map((g: any) => (
                 <Link href={`/${lang}/game/${g.slug}`} key={g.id} className="relative aspect-square rounded-xl overflow-hidden group border border-outline-variant/10 bg-surface-container-low">
-                  <img src={g.thumbnail} alt={g.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                  <Image src={g.thumbnail} alt={g.title} fill sizes="(max-width: 1024px) 25vw, 50vw" className="object-cover group-hover:scale-110 transition-transform duration-300" />
                 </Link>
               ))}
             </div>

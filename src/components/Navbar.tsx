@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { getTranslation } from '@/lib/translations';
 
@@ -120,7 +121,7 @@ export default function Navbar({ siteSettings, lang = 'en' }: { siteSettings?: {
         <div className="flex items-center gap-8">
           <Link href={`/${lang}`} className="flex items-center gap-2 font-headline-md text-headline-md font-black tracking-tighter text-primary" onClick={() => setMobileMenuOpen(false)}>
             {siteSettings?.site_logo ? (
-              <img src={siteSettings.site_logo} alt={siteSettings.site_name} className="h-10 md:h-12 w-auto object-contain" />
+              <Image src={siteSettings.site_logo} alt={siteSettings.site_name} width={120} height={48} className="h-10 md:h-12 w-auto object-contain" />
             ) : (
               <span>{siteSettings?.site_name || 'ULTI GRAVITY'}</span>
             )}
@@ -219,7 +220,7 @@ export default function Navbar({ siteSettings, lang = 'en' }: { siteSettings?: {
                         setQuery('');
                       }}
                     >
-                      <img src={game.thumbnail} alt={game.title} className="w-10 h-10 object-cover rounded-md border" />
+                      <Image src={game.thumbnail} alt={game.title} width={40} height={40} className="w-10 h-10 object-cover rounded-md border" />
                       <div className="flex flex-col">
                         <span className="text-xs font-bold text-on-surface">{game.title}</span>
                         <span className="text-[10px] text-primary">{game.category}</span>

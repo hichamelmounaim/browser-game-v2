@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface GameCardProps {
   id: string;
@@ -49,11 +50,12 @@ export default function GameCard({ id, title, thumbnail, category, rating = 4.5,
       <article className="relative aspect-[4/3] rounded-xl overflow-hidden bg-surface-container shadow-sm border border-outline-variant/10 hover:shadow-[6px_6px_0px_0px_rgba(0,92,172,0.3)] hover:border-primary/20 hover:scale-[1.02] transition-all duration-200 cursor-pointer active:scale-95">
         
         {/* Thumbnail Image */}
-        <img 
+        <Image 
           src={thumbnail} 
           alt={`${displayTitle} thumbnail`} 
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-          loading="lazy" 
+          fill
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+          className="object-cover group-hover:scale-105 transition-transform duration-500" 
         />
         
         {/* Bottom Text Overlay */}

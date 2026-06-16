@@ -33,9 +33,29 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
   const games = getAllGames();
   const categories = getAllCategories();
   const siteSettings = getSiteSettings();
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://gamecis.com';
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": siteSettings.site_name,
+            "url": `${baseUrl}/${lang}`,
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": `${baseUrl}/${lang}/search?q={search_term_string}`
+              },
+              "query-input": "required name=search_term_string"
+            }
+          })
+        }}
+      />
       <Navbar siteSettings={siteSettings} lang={lang} />
       <HomeClient games={games} categories={categories} siteSettings={siteSettings} lang={lang} />
       <Footer siteSettings={siteSettings} lang={lang} />

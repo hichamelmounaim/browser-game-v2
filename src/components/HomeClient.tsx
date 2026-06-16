@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import GameCard from './GameCard';
+import Image from 'next/image';
 
 import { Game, Category } from '@/lib/db';
 
@@ -88,7 +89,7 @@ export default function HomeClient({ games, categories, siteSettings, lang = 'en
                         href={`/${lang}/game/${game.slug}`}
                         className="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-container transition-all"
                       >
-                        <img src={game.thumbnail} alt={lang === 'fr' ? game.title_fr || game.title : lang === 'es' ? game.title_es || game.title : game.title} className="w-12 h-12 object-cover rounded-md border" />
+                        <Image src={game.thumbnail} alt={lang === 'fr' ? game.title_fr || game.title : lang === 'es' ? game.title_es || game.title : game.title} width={48} height={48} className="w-12 h-12 object-cover rounded-md border" />
                         <div className="flex flex-col">
                           <span className="text-sm font-bold text-on-surface">{lang === 'fr' ? game.title_fr || game.title : lang === 'es' ? game.title_es || game.title : game.title}</span>
                           <span className="text-xs text-primary">{game.category}</span>
@@ -196,8 +197,8 @@ export default function HomeClient({ games, categories, siteSettings, lang = 'en
                 const gameTitle = lang === 'fr' ? game.title_fr || game.title : lang === 'es' ? game.title_es || game.title : game.title;
                 return (
                   <Link key={game.id} href={`/${lang}/game/${game.slug}`} className="group cursor-pointer block">
-                    <div className="aspect-square rounded-xl overflow-hidden mb-2 shadow-sm border border-outline-variant/10 group-hover:scale-105 group-hover:shadow-[4px_4px_0px_0px_rgba(0,92,172,0.3)] transition-all duration-200">
-                      <img className="w-full h-full object-cover" src={game.thumbnail} alt={gameTitle} />
+                    <div className="relative aspect-square rounded-xl overflow-hidden mb-2 shadow-sm border border-outline-variant/10 group-hover:scale-105 group-hover:shadow-[4px_4px_0px_0px_rgba(0,92,172,0.3)] transition-all duration-200">
+                      <Image className="object-cover" src={game.thumbnail} alt={gameTitle} fill sizes="(max-width: 768px) 50vw, 16vw" />
                     </div>
                     <p className="font-bold text-xs truncate text-on-surface group-hover:text-primary transition-colors mt-1">
                       {gameTitle}

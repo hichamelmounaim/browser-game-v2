@@ -4,6 +4,7 @@ import { getAllGames, getAllCategories, getSiteSettings } from '@/lib/db';
 import { getTranslation } from '@/lib/translations';
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import Image from 'next/image';
 
 type Props = {
   params: Promise<{ lang: string }>;
@@ -78,10 +79,12 @@ export default async function CategoriesPage({ params }: Props) {
                   <div className="relative h-44 rounded-2xl overflow-hidden bg-surface-container shadow-sm border border-outline-variant/10 hover:shadow-[6px_6px_0px_0px_rgba(0,92,172,0.3)] hover:border-primary/20 hover:scale-[1.02] transition-all duration-200 cursor-pointer active:scale-95">
                     
                     {/* Background Category Thumbnail */}
-                    <img 
+                    <Image 
                       src={category.thumbnail || "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600"} 
                       alt={category.name} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 25vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     
                     {/* Dark overlay with dynamic contents */}

@@ -6,6 +6,7 @@ import { getTranslation } from '@/lib/translations';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
+import Image from 'next/image';
 
 type Props = {
   params: Promise<{ slug: string; lang: string }>;
@@ -83,6 +84,7 @@ export default async function CategoryPage({ params }: Props) {
   const category = getCategoryBySlug(resolvedParams.slug);
   const siteSettings = getSiteSettings();
   const t = getTranslation(lang);
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://gamecis.com';
 
   if (!category) {
     notFound();
@@ -124,6 +126,29 @@ export default async function CategoryPage({ params }: Props) {
 
   return (
     <div className="portal-lowpoly min-h-screen flex flex-col justify-between">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": `${baseUrl}/${lang}`
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": categoryName,
+                "item": `${baseUrl}/${lang}/category/${resolvedParams.slug}`
+              }
+            ]
+          })
+        }}
+      />
       <div>
         <Navbar siteSettings={siteSettings} lang={lang} />
         
@@ -159,11 +184,13 @@ export default async function CategoryPage({ params }: Props) {
                 </span>
               </div>
             </div>
-            <div className="w-24 h-24 md:w-32 md:h-32 flex-shrink-0 bg-teal-50 rounded-2xl overflow-hidden border-2 border-white shadow-inner flex items-center justify-center">
-              <img 
+            <div className="relative w-24 h-24 md:w-32 md:h-32 flex-shrink-0 bg-teal-50 rounded-2xl overflow-hidden border-2 border-white shadow-inner flex items-center justify-center">
+              <Image 
                 src={categoryThumbnail} 
                 alt={categoryName} 
-                className="w-full h-full object-cover"
+                fill
+                sizes="(max-width: 768px) 96px, 128px"
+                className="object-cover"
               />
             </div>
           </div>
