@@ -24,6 +24,27 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
         'x-default': `${baseUrl}/en`,
       },
     },
+    openGraph: {
+      title: t.seoTitle.replace('Gamecis.com', settings.site_name),
+      description: t.seoDescription.replace('Gamecis.com', settings.site_name),
+      url: `${baseUrl}/${lang}`,
+      siteName: settings.site_name,
+      images: [
+        {
+          url: '/og-image.jpg',
+          width: 1200,
+          height: 630,
+          alt: settings.site_name,
+        },
+      ],
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: t.seoTitle.replace('Gamecis.com', settings.site_name),
+      description: t.seoDescription.replace('Gamecis.com', settings.site_name),
+      images: ['/og-image.jpg'],
+    },
   };
 }
 
@@ -40,20 +61,30 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebSite",
-            "name": siteSettings.site_name,
-            "url": `${baseUrl}/${lang}`,
-            "potentialAction": {
-              "@type": "SearchAction",
-              "target": {
-                "@type": "EntryPoint",
-                "urlTemplate": `${baseUrl}/${lang}/search?q={search_term_string}`
-              },
-              "query-input": "required name=search_term_string"
+          __html: JSON.stringify([
+            {
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "name": siteSettings.site_name,
+              "url": `${baseUrl}/${lang}`,
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": `${baseUrl}/${lang}/search?q={search_term_string}`
+                },
+                "query-input": "required name=search_term_string"
+              }
+            },
+            {
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "name": siteSettings.site_name,
+              "url": baseUrl,
+              "logo": `${baseUrl}/favicon.png`,
+              "sameAs": []
             }
-          })
+          ])
         }}
       />
       <Navbar siteSettings={siteSettings} lang={lang} />

@@ -2,6 +2,8 @@ import { getGameBySlug, getAllGames, getSiteSettings } from '@/lib/db';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import GamePlayer from '@/components/GamePlayer';
+import GameTracker from '@/components/GameTracker';
+import GameActions from '@/components/GameActions';
 import { getTranslation } from '@/lib/translations';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
@@ -171,6 +173,7 @@ export default async function GamePage({ params }: Props) {
       <Navbar siteSettings={siteSettings} lang={lang} />
       
       <main className="max-w-[1440px] mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <GameTracker game={{ slug: game.slug, title: displayTitle, thumbnail: game.thumbnail, category: game.category }} />
         
         {/* Navigation Breadcrumb */}
         <div className="mb-4">
@@ -233,6 +236,7 @@ export default async function GamePage({ params }: Props) {
                    <p className="mt-4 text-sm text-on-surface-variant leading-relaxed">
                      {short_description || "A fun and engaging game to play online directly in your browser. No downloads required."}
                    </p>
+                   <GameActions game={{ slug: game.slug, title: displayTitle, thumbnail: game.thumbnail, category: game.category }} translations={{ favorite: t.favorite, share: t.share, addedToFavorites: t.addedToFavorites, removedFromFavorites: t.removedFromFavorites }} />
                 </div>
               </div>
 

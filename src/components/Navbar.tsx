@@ -272,7 +272,9 @@ export default function Navbar({ siteSettings, lang = 'en' }: { siteSettings?: {
             )}
           </div>
 
-          <button className="material-symbols-outlined text-primary p-2 rounded-full hover:bg-surface-container transition-colors" title="Account">account_circle</button>
+          <Link href={`/${lang}/my-games`} className="material-symbols-outlined text-red-500 p-2 rounded-full hover:bg-surface-container transition-colors" title={t.myGames || "My Games"}>
+            favorite
+          </Link>
 
           {/* Mobile menu toggle */}
           <button 
@@ -308,6 +310,7 @@ export default function Navbar({ siteSettings, lang = 'en' }: { siteSettings?: {
 
             <nav className="flex flex-col gap-4 font-label-bold text-body-md mt-4">
               <Link href={`/${lang}`} className="text-on-surface hover:text-primary py-2 border-b border-black/5" onClick={() => setMobileMenuOpen(false)}>{t.home}</Link>
+              <Link href={`/${lang}/my-games`} className="text-on-surface hover:text-primary py-2 border-b border-black/5" onClick={() => setMobileMenuOpen(false)}>{t.myGames || "My Games"}</Link>
               <Link href={`/${lang}/new`} className="text-on-surface hover:text-primary py-2 border-b border-black/5" onClick={() => setMobileMenuOpen(false)}>{t.newGames}</Link>
               <Link href={`/${lang}/categories`} className="text-on-surface hover:text-primary py-2 border-b border-black/5" onClick={() => setMobileMenuOpen(false)}>{t.allGenres}</Link>
               

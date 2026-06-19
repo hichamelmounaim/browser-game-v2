@@ -1,5 +1,8 @@
+"use client";
+
 import Link from 'next/link';
 import Image from 'next/image';
+import { useUserGames } from '@/hooks/useUserGames';
 
 interface GameCardProps {
   id: string;
@@ -36,6 +39,8 @@ const categoryTranslations: Record<string, Record<string, string>> = {
 };
 
 export default function GameCard({ id, title, thumbnail, category, rating = 4.5, lang = 'en', title_fr, title_es }: GameCardProps) {
+  const { isFavorite, toggleFavorite, isLoaded } = useUserGames();
+  
   let displayTitle = title;
   if (lang === 'fr') {
     displayTitle = title_fr || displayTitle;
@@ -44,9 +49,15 @@ export default function GameCard({ id, title, thumbnail, category, rating = 4.5,
   }
 
   const displayCategory = categoryTranslations[lang]?.[category] || category;
+  const isFav = isLoaded ? isFavorite(id) : false;
+
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent navigating to the game page when clicking the heart
+    toggleFavorite({ id, title, thumbnail, category });
+  };
 
   return (
-    <Link href={`/${lang}/game/${id}`} className="block group">
+    <Link href={`/${lang}/game/${id}`} className="block group relative">
       <article className="relative aspect-[4/3] rounded-xl overflow-hidden bg-surface-container shadow-sm border border-outline-variant/10 hover:shadow-[6px_6px_0px_0px_rgba(0,92,172,0.3)] hover:border-primary/20 hover:scale-[1.02] transition-all duration-200 cursor-pointer active:scale-95">
         
         {/* Thumbnail Image */}
@@ -74,6 +85,20 @@ export default function GameCard({ id, title, thumbnail, category, rating = 4.5,
         {/* Hover Highlight Overlay */}
         <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"></div>
       </article>
+
+      {/* Floating Favorite Button */}
+      <button 
+        onClick={handleFavoriteClick}
+        className={`absolute top-2 right-2 p-1.5 rounded-full z-10 backdrop-blur-md transition-all duration-200 ${
+          isFav 
+            ? 'bg-red-500/20 text-red-500 hover:bg-red-500/40' 
+            : 'bg-black/40 text-white/70 hover:bg-black/60 hover:text-white'
+        }`}
+      >
+        <span className="material-symbols-outlined text-[18px] block" style={{ fontVariationSettings: isFav ? "'FILL' 1" : "'FILL' 0" }}>
+          favorite
+        </span>
+      </button>
     </Link>
   );
 }

@@ -129,24 +129,37 @@ export default async function CategoryPage({ params }: Props) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "BreadcrumbList",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": `${baseUrl}/${lang}`
-              },
-              {
-                "@type": "ListItem",
-                "position": 2,
-                "name": categoryName,
-                "item": `${baseUrl}/${lang}/category/${resolvedParams.slug}`
+          __html: JSON.stringify([
+            {
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": `${baseUrl}/${lang}`
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": categoryName,
+                  "item": `${baseUrl}/${lang}/category/${resolvedParams.slug}`
+                }
+              ]
+            },
+            {
+              "@context": "https://schema.org",
+              "@type": "CollectionPage",
+              "name": categoryName,
+              "description": seoDesc || `${t.descriptionFallback.replace('Gamecis.com', siteSettings.site_name)}`,
+              "url": `${baseUrl}/${lang}/category/${resolvedParams.slug}`,
+              "about": {
+                "@type": "Thing",
+                "name": `${categoryName} Games`
               }
-            ]
-          })
+            }
+          ])
         }}
       />
       <div>

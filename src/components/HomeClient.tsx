@@ -212,37 +212,97 @@ export default function HomeClient({ games, categories, siteSettings, lang = 'en
       })}
 
       {/* SEO Section */}
-      <section className="px-6 py-12 max-w-4xl mx-auto text-center border-t border-outline-variant/20 mt-12">
-        <h2 className="font-headline-lg text-headline-lg mb-6 text-on-surface">
-          {t.seoBlockTitle.replace('Gamecis.com', siteSettings?.site_name || 'ULTI GRAVITY')}
-        </h2>
-        <div className="text-on-surface-variant space-y-4 leading-relaxed text-sm">
-          <p>
-            {t.seoBlockP1.replace('Gamecis.com', siteSettings?.site_name || 'ULTI GRAVITY')}
-          </p>
-          <p>
-            {t.seoBlockP2.replace('Gamecis.com', siteSettings?.site_name || 'ULTI GRAVITY')}
-          </p>
+      <section className="px-6 py-16 max-w-4xl mx-auto border-t border-outline-variant/20 mt-12">
+        
+        {/* Main SEO Text */}
+        <div className="text-center mb-12">
+          <h2 className="font-headline-lg text-headline-lg mb-6 text-on-surface">
+            {t.seoBlockTitle.replace('Gamecis.com', siteSettings?.site_name || 'ULTI GRAVITY')}
+          </h2>
+          <div className="text-on-surface-variant space-y-4 leading-relaxed text-sm max-w-3xl mx-auto">
+            <p>{t.seoBlockP1.replace('Gamecis.com', siteSettings?.site_name || 'ULTI GRAVITY')}</p>
+            <p>{t.seoBlockP2.replace('Gamecis.com', siteSettings?.site_name || 'ULTI GRAVITY')}</p>
+          </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
-            <div className="p-4 bg-surface-container rounded-xl border border-outline-variant/10">
-              <h4 className="font-extrabold text-lg text-primary">1500+</h4>
-              <p className="text-xs text-on-surface-variant mt-1">{t.freeGames}</p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-10">
+            <div className="p-4 bg-surface-container rounded-xl border border-outline-variant/10 shadow-sm hover:scale-105 transition-transform">
+              <h4 className="font-extrabold text-2xl text-primary">1500+</h4>
+              <p className="text-xs font-bold text-on-surface-variant mt-1 uppercase tracking-wider">{t.freeGames}</p>
             </div>
-            <div className="p-4 bg-surface-container rounded-xl border border-outline-variant/10">
-              <h4 className="font-extrabold text-lg text-primary">Instant</h4>
-              <p className="text-xs text-on-surface-variant mt-1">{t.noDownload}</p>
+            <div className="p-4 bg-surface-container rounded-xl border border-outline-variant/10 shadow-sm hover:scale-105 transition-transform">
+              <h4 className="font-extrabold text-2xl text-primary">Instant</h4>
+              <p className="text-xs font-bold text-on-surface-variant mt-1 uppercase tracking-wider">{t.noDownload}</p>
             </div>
-            <div className="p-4 bg-surface-container rounded-xl border border-outline-variant/10">
-              <h4 className="font-extrabold text-lg text-primary">Responsive</h4>
-              <p className="text-xs text-on-surface-variant mt-1">{t.responsive}</p>
+            <div className="p-4 bg-surface-container rounded-xl border border-outline-variant/10 shadow-sm hover:scale-105 transition-transform">
+              <h4 className="font-extrabold text-2xl text-primary">Responsive</h4>
+              <p className="text-xs font-bold text-on-surface-variant mt-1 uppercase tracking-wider">{t.responsive}</p>
             </div>
-            <div className="p-4 bg-surface-container rounded-xl border border-outline-variant/10">
-              <h4 className="font-extrabold text-lg text-primary">Global</h4>
-              <p className="text-xs text-on-surface-variant mt-1">{t.global}</p>
+            <div className="p-4 bg-surface-container rounded-xl border border-outline-variant/10 shadow-sm hover:scale-105 transition-transform">
+              <h4 className="font-extrabold text-2xl text-primary">Global</h4>
+              <p className="text-xs font-bold text-on-surface-variant mt-1 uppercase tracking-wider">{t.global}</p>
             </div>
           </div>
         </div>
+
+        {/* FAQ Section */}
+        <div className="mt-16">
+          <h3 className="font-headline-md text-[28px] font-bold text-on-surface mb-8 text-center">
+            {t.faqTitle}
+          </h3>
+          <div className="space-y-4">
+            {[
+              { q: t.faqQ1, a: t.faqA1 },
+              { q: t.faqQ2, a: t.faqA2 },
+              { q: t.faqQ3, a: t.faqA3 },
+              { q: t.faqQ4, a: t.faqA4 }
+            ].map((faq, i) => (
+              <details key={i} className="group bg-surface-container rounded-xl border border-outline-variant/10 overflow-hidden">
+                <summary className="flex items-center justify-between font-bold cursor-pointer list-none p-5 text-on-surface">
+                  <span className="text-base">{faq.q}</span>
+                  <span className="transition group-open:rotate-180 text-primary">
+                    <svg fill="none" height="24" shapeRendering="geometricPrecision" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                  </span>
+                </summary>
+                <div className="text-on-surface-variant text-sm px-5 pb-5 leading-relaxed">
+                  {faq.a}
+                </div>
+              </details>
+            ))}
+          </div>
+        </div>
+
+        {/* JSON-LD FAQ Schema for Google */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              "mainEntity": [
+                {
+                  "@type": "Question",
+                  "name": t.faqQ1,
+                  "acceptedAnswer": { "@type": "Answer", "text": t.faqA1 }
+                },
+                {
+                  "@type": "Question",
+                  "name": t.faqQ2,
+                  "acceptedAnswer": { "@type": "Answer", "text": t.faqA2 }
+                },
+                {
+                  "@type": "Question",
+                  "name": t.faqQ3,
+                  "acceptedAnswer": { "@type": "Answer", "text": t.faqA3 }
+                },
+                {
+                  "@type": "Question",
+                  "name": t.faqQ4,
+                  "acceptedAnswer": { "@type": "Answer", "text": t.faqA4 }
+                }
+              ]
+            })
+          }}
+        />
       </section>
 
     </main>

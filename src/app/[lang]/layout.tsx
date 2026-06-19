@@ -41,6 +41,27 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
     title: t.seoTitle.replace('Gamecis.com', settings.site_name),
     description: t.seoDescription.replace('Gamecis.com', settings.site_name),
     verification,
+    openGraph: {
+      title: t.seoTitle.replace('Gamecis.com', settings.site_name),
+      description: t.seoDescription.replace('Gamecis.com', settings.site_name),
+      url: baseUrl,
+      siteName: settings.site_name,
+      images: [
+        {
+          url: '/og-image.jpg',
+          width: 1200,
+          height: 630,
+          alt: settings.site_name,
+        },
+      ],
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: t.seoTitle.replace('Gamecis.com', settings.site_name),
+      description: t.seoDescription.replace('Gamecis.com', settings.site_name),
+      images: ['/og-image.jpg'],
+    },
     icons: {
       icon: '/favicon.png',
       shortcut: '/favicon.png',
