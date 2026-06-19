@@ -282,6 +282,53 @@ export default async function CategoryPage({ params }: Props) {
               </div>
             </div>
           )}
+
+          {/* FAQ JSON-LD Schema */}
+          {categoryGames.length > 0 && (
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{
+                __html: JSON.stringify({
+                  "@context": "https://schema.org",
+                  "@type": "FAQPage",
+                  "mainEntity": [
+                    {
+                      "@type": "Question",
+                      "name": `What are the best free ${categoryName} games?`,
+                      "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": `Some of the most popular and highly rated ${categoryName} games you can play for free on ${siteSettings.site_name} include ${popularGames.slice(0, 5).map(g => g.title).join(', ')}.`
+                      }
+                    },
+                    {
+                      "@type": "Question",
+                      "name": `What are the newest ${categoryName} games?`,
+                      "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": `We frequently update our catalog with new releases. Some of the latest ${categoryName} games added to ${siteSettings.site_name} include ${categoryGames.slice(0, 3).map(g => g.title).join(', ')}.`
+                      }
+                    },
+                    {
+                      "@type": "Question",
+                      "name": `Can I play ${categoryName} games on my mobile phone or tablet?`,
+                      "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": `Yes! All our ${categoryName} games are built using modern HTML5 technology. This means they run directly in your web browser and are fully optimized for mobile phones, tablets, and desktop computers.`
+                      }
+                    },
+                    {
+                      "@type": "Question",
+                      "name": `Do I need to download anything to play these ${categoryName} games?`,
+                      "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": `No downloads or installations are required. You can play all our ${categoryName} games instantly in your browser. Just click on a game and start playing!`
+                      }
+                    }
+                  ]
+                })
+              }}
+            />
+          )}
         </main>
       </div>
 

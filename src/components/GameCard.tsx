@@ -13,6 +13,7 @@ interface GameCardProps {
   lang?: string;
   title_fr?: string;
   title_es?: string;
+  priority?: boolean;
 }
 
 const categoryTranslations: Record<string, Record<string, string>> = {
@@ -38,7 +39,7 @@ const categoryTranslations: Record<string, Record<string, string>> = {
   }
 };
 
-export default function GameCard({ id, title, thumbnail, category, rating = 4.5, lang = 'en', title_fr, title_es }: GameCardProps) {
+export default function GameCard({ id, title, thumbnail, category, rating = 4.5, lang = 'en', title_fr, title_es, priority = false }: GameCardProps) {
   const { isFavorite, toggleFavorite, isLoaded } = useUserGames();
   
   let displayTitle = title;
@@ -65,6 +66,7 @@ export default function GameCard({ id, title, thumbnail, category, rating = 4.5,
           src={thumbnail} 
           alt={`${displayTitle} thumbnail`} 
           fill
+          priority={priority}
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
           className="object-cover group-hover:scale-105 transition-transform duration-500" 
         />

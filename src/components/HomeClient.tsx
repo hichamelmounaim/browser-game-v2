@@ -151,7 +151,7 @@ export default function HomeClient({ games, categories, siteSettings, lang = 'en
           </div>
         ) : (
           <div className="bento-grid">
-            {trendingGames.map((game) => (
+            {trendingGames.map((game, index) => (
               <GameCard
                 key={game.id}
                 id={game.slug}
@@ -162,6 +162,7 @@ export default function HomeClient({ games, categories, siteSettings, lang = 'en
                 thumbnail={game.thumbnail}
                 rating={game.rating}
                 lang={lang}
+                priority={index < 4}
               />
             ))}
           </div>

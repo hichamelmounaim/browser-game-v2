@@ -349,6 +349,51 @@ export default async function GamePage({ params }: Props) {
           </aside>
           
         </div>
+
+        {/* FAQ JSON-LD Schema for Game Page */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              "mainEntity": [
+                {
+                  "@type": "Question",
+                  "name": `How do I play ${displayTitle}?`,
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": `To play ${displayTitle}, use your ${controls || "Mouse or keyboard"}. The game runs directly in your browser without any downloads required.`
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": `Is ${displayTitle} free to play?`,
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": `Yes! ${displayTitle} is completely free to play online on ${siteSettings.site_name}.`
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": `Who developed ${displayTitle}?`,
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": `${displayTitle} was developed by ${game.developer || "Z & K Games"}.`
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": `Can I play ${displayTitle} on my phone?`,
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": `Yes, ${displayTitle} is supported on ${game.supported_devices || "Desktop, phone and tablet"}. You can play it seamlessly in your mobile browser.`
+                  }
+                }
+              ]
+            })
+          }}
+        />
       </main>
 
       <Footer siteSettings={siteSettings} lang={lang} />
