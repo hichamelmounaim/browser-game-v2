@@ -17,6 +17,15 @@ export interface Game {
   seo_keywords: string;
   seo_keywords_fr?: string;
   seo_keywords_es?: string;
+  editorial_review?: string;
+  editorial_review_fr?: string;
+  editorial_review_es?: string;
+  how_to_play?: string;
+  how_to_play_fr?: string;
+  how_to_play_es?: string;
+  tips?: string;
+  tips_fr?: string;
+  tips_es?: string;
   rating: number;
   description_source?: string;
   created_at: string;

@@ -92,17 +92,48 @@ export default async function GamePage({ params }: Props) {
     return catName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
   };
 
+  const getDeterministicRandom = (seed: string) => {
+    let hash = 0;
+    for (let i = 0; i < seed.length; i++) {
+      hash = Math.imul(31, hash) + seed.charCodeAt(i) | 0;
+    }
+    // Simple LCG
+    const a = 1664525;
+    const c = 1013904223;
+    const m = 4294967296; // 2^32
+    hash = (a * hash + c) % m;
+    if (hash < 0) hash += m;
+    return hash / m;
+  };
+  
+  const randomBase = getDeterministicRandom(game.slug);
+  const generatedRating = parseFloat((4.0 + (randomBase * 0.9)).toFixed(1)); 
+  const generatedCount = Math.floor(50 + getDeterministicRandom(game.slug + "_count") * 2500);
+  
+  const ratingValue = (game.rating && game.rating !== 4.5) ? parseFloat(game.rating.toFixed(1)) : generatedRating;
+  const ratingCount = (game.rating && game.rating !== 4.5) ? Math.max(15, Math.round(game.rating * 35)) : generatedCount;
+
   let description = game.description;
   let short_description = game.short_description;
   let controls = game.controls;
+  let editorial_review = game.editorial_review;
+  let how_to_play = game.how_to_play;
+  let tips = game.tips;
+
   if (lang === 'fr') {
     description = game.description_fr || description;
     short_description = game.short_description_fr || short_description;
     controls = game.controls_fr || controls;
+    editorial_review = game.editorial_review_fr || editorial_review;
+    how_to_play = game.how_to_play_fr || how_to_play;
+    tips = game.tips_fr || tips;
   } else if (lang === 'es') {
     description = game.description_es || description;
     short_description = game.short_description_es || short_description;
     controls = game.controls_es || controls;
+    editorial_review = game.editorial_review_es || editorial_review;
+    how_to_play = game.how_to_play_es || how_to_play;
+    tips = game.tips_es || tips;
   }
 
   const displayTitle = lang === 'fr' ? game.title_fr || game.title : lang === 'es' ? game.title_es || game.title : game.title;
@@ -131,12 +162,20 @@ export default async function GamePage({ params }: Props) {
             "image": game.thumbnail,
             "url": `${baseUrl}/${lang}/game/${game.slug}`,
             "genre": game.category,
+            "applicationCategory": "Game",
+            "operatingSystem": "Web Browser",
             "aggregateRating": {
               "@type": "AggregateRating",
-              "ratingValue": game.rating || 4.5,
+              "ratingValue": ratingValue,
               "bestRating": "5",
               "worstRating": "1",
-              "ratingCount": Math.max(15, Math.round((game.rating || 4.5) * 35))
+              "ratingCount": ratingCount
+            },
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD",
+              "availability": "https://schema.org/InStock"
             }
           })
         }}
@@ -206,8 +245,8 @@ export default async function GamePage({ params }: Props) {
                  </div>
               </div>
               <div className="flex items-center gap-4 sm:gap-6 text-sm font-bold text-on-surface-variant">
-                  <div className="flex flex-col items-center hover:text-primary cursor-pointer"><span className="material-symbols-outlined text-xl sm:text-2xl">thumb_up</span> 1.5M</div>
-                  <div className="flex flex-col items-center hover:text-red-500 cursor-pointer"><span className="material-symbols-outlined text-xl sm:text-2xl">thumb_down</span> 68.2K</div>
+                  <div className="flex flex-col items-center hover:text-primary cursor-pointer"><span className="material-symbols-outlined text-xl sm:text-2xl">thumb_up</span> {Math.floor(ratingCount * 0.92)}</div>
+                  <div className="flex flex-col items-center hover:text-red-500 cursor-pointer"><span className="material-symbols-outlined text-xl sm:text-2xl">thumb_down</span> {ratingCount - Math.floor(ratingCount * 0.92)}</div>
                   <div className="flex flex-col items-center hover:text-blue-500 cursor-pointer"><span className="material-symbols-outlined text-xl sm:text-2xl">flag</span></div>
               </div>
             </div>
@@ -253,7 +292,7 @@ export default async function GamePage({ params }: Props) {
                   <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-amber-100 flex items-center justify-center text-amber-500"><span className="material-symbols-outlined">star</span></div>
                   <div>
                     <div className="text-[10px] sm:text-xs font-bold text-on-surface-variant uppercase tracking-wider">Rating</div>
-                    <div className="text-base sm:text-lg font-extrabold text-on-surface">{game.rating ? game.rating.toFixed(1) : "4.4"}</div>
+                    <div className="text-base sm:text-lg font-extrabold text-on-surface">{ratingValue.toFixed(1)}</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -271,6 +310,31 @@ export default async function GamePage({ params }: Props) {
                   </div>
                 </div>
               </div>
+
+              {editorial_review && (
+                <div className="mt-8 bg-primary/5 rounded-2xl p-6 border border-primary/10">
+                  <h3 className="text-xl font-bold text-primary mb-3">Editorial Review</h3>
+                  <div className="prose prose-sm max-w-none text-on-surface-variant leading-relaxed" dangerouslySetInnerHTML={{ __html: editorial_review }} />
+                </div>
+              )}
+
+              {how_to_play && (
+                <div className="mt-8">
+                  <h3 className="text-xl font-bold text-on-surface mb-3 flex items-center gap-2">
+                    <span className="material-symbols-outlined text-primary">sports_esports</span> How to Play
+                  </h3>
+                  <div className="prose prose-sm max-w-none text-on-surface-variant leading-relaxed bg-surface-container-low rounded-xl p-5 border border-outline-variant/10" dangerouslySetInnerHTML={{ __html: how_to_play }} />
+                </div>
+              )}
+
+              {tips && (
+                <div className="mt-6">
+                  <h3 className="text-xl font-bold text-on-surface mb-3 flex items-center gap-2">
+                    <span className="material-symbols-outlined text-amber-500">lightbulb</span> Tips & Tricks
+                  </h3>
+                  <div className="prose prose-sm max-w-none text-on-surface-variant leading-relaxed bg-amber-50/50 rounded-xl p-5 border border-amber-500/20" dangerouslySetInnerHTML={{ __html: tips }} />
+                </div>
+              )}
 
               <h3 className="text-xl font-bold text-on-surface mt-6 border-b border-outline-variant/20 pb-4">About this game</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-0 gap-x-12 text-sm mt-2">
@@ -300,7 +364,7 @@ export default async function GamePage({ params }: Props) {
                 </div>
                 <div className="flex justify-between py-4 border-b border-outline-variant/10">
                   <span className="font-bold text-on-surface flex items-center gap-2"><span className="material-symbols-outlined text-lg opacity-70">star</span> Rating</span>
-                  <span className="text-on-surface-variant text-right">{game.rating ? game.rating.toFixed(1) : "4.4"}</span>
+                  <span className="text-on-surface-variant text-right">{ratingValue.toFixed(1)} ({ratingCount} reviews)</span>
                 </div>
                 <div className="flex justify-between py-4 border-b border-outline-variant/10">
                   <span className="font-bold text-on-surface flex items-center gap-2"><span className="material-symbols-outlined text-lg opacity-70">policy</span> Privacy Policy</span>

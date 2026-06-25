@@ -182,11 +182,16 @@ export default function HomeClient({ games, categories, siteSettings, lang = 'en
         }
         catDisplayName = catDisplayName.charAt(0).toUpperCase() + catDisplayName.slice(1);
 
+        const gameWord = t.gamesAvailable.split(' ')[0];
+        const sectionTitle = catDisplayName.toLowerCase().includes(gameWord.toLowerCase()) 
+          ? catDisplayName 
+          : `${catDisplayName} ${gameWord}`;
+
         return (
           <section key={cat.id} className="px-6 py-8">
             <div className="flex items-center justify-between mb-6">
               <h2 className="font-headline-lg text-headline-lg text-on-surface">
-                {catDisplayName} {t.gamesAvailable.split(' ')[0]}
+                {sectionTitle}
               </h2>
               <Link href={`/${lang}/category/${getCategorySlug(cat.name)}`} className="text-primary font-bold hover:underline text-sm">
                 {t.viewAll}
@@ -223,6 +228,7 @@ export default function HomeClient({ games, categories, siteSettings, lang = 'en
           <div className="text-on-surface-variant space-y-4 leading-relaxed text-sm max-w-3xl mx-auto">
             <p>{t.seoBlockP1.replace('Gamecis.com', siteSettings?.site_name || 'ULTI GRAVITY')}</p>
             <p>{t.seoBlockP2.replace('Gamecis.com', siteSettings?.site_name || 'ULTI GRAVITY')}</p>
+            <p>{t.seoBlockP3?.replace('Gamecis.com', siteSettings?.site_name || 'ULTI GRAVITY')}</p>
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-10">

@@ -4,6 +4,7 @@ import Script from "next/script";
 import "../globals.css";
 import { getSiteSettings } from "@/lib/db";
 import { getTranslation } from "@/lib/translations";
+import CookieManager from "@/components/CookieManager";
 
 const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-sans",
@@ -87,31 +88,7 @@ export default async function RootLayout({
         />
       </head>
       <body className="bg-background text-on-surface font-body-md min-h-screen">
-        {settings.google_analytics_id && (
-          <>
-            <Script
-              async
-              src={`https://www.googletagmanager.com/gtag/js?id=${settings.google_analytics_id}`}
-              strategy="afterInteractive"
-            />
-            <Script id="google-analytics" strategy="afterInteractive">
-              {`
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', '${settings.google_analytics_id}');
-              `}
-            </Script>
-          </>
-        )}
-        {settings.google_adsense_id && (
-          <Script
-            async
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${settings.google_adsense_id}`}
-            crossOrigin="anonymous"
-            strategy="afterInteractive"
-          />
-        )}
+        <CookieManager settings={settings as any} lang={lang} />
         <Script id="yandex-metrika" strategy="afterInteractive">
           {`
             (function(m,e,t,r,i,k,a){
