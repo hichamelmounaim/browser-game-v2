@@ -14,7 +14,7 @@ interface HomeClientProps {
   lang?: string;
 }
 
-import { getTranslation } from '@/lib/translations';
+import { getTranslation, getLocalizedPath } from '@/lib/translations';
 
 export default function HomeClient({ games, categories, siteSettings, lang = 'en' }: HomeClientProps) {
   const [query, setQuery] = useState('');
@@ -86,7 +86,7 @@ export default function HomeClient({ games, categories, siteSettings, lang = 'en
                     filteredGames.map((game) => (
                       <Link
                         key={game.id}
-                        href={`/${lang}/game/${game.slug}`}
+                        href={getLocalizedPath(lang, 'game', game.slug)}
                         className="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-container transition-all"
                       >
                         <Image src={game.thumbnail} alt={lang === 'fr' ? game.title_fr || game.title : lang === 'es' ? game.title_es || game.title : game.title} width={48} height={48} className="w-12 h-12 object-cover rounded-md border" />
@@ -119,7 +119,7 @@ export default function HomeClient({ games, categories, siteSettings, lang = 'en
                 return (
                   <Link
                     key={cat.id}
-                    href={`/${lang}/category/${getCategorySlug(cat.name)}`}
+                    href={getLocalizedPath(lang, 'category', getCategorySlug(cat.name))}
                     className="px-4 py-2 bg-surface-white/10 hover:bg-surface-white/20 text-white rounded-full text-[14px] font-bold cursor-pointer hover:scale-105 transition-all duration-200"
                   >
                     {catDisplayName}
@@ -140,7 +140,7 @@ export default function HomeClient({ games, categories, siteSettings, lang = 'en
             </span>
             {t.popularThisWeek}
           </h2>
-          <Link href={`/${lang}/trending`} className="text-primary font-bold hover:underline text-sm">
+          <Link href={getLocalizedPath(lang, 'trending')} className="text-primary font-bold hover:underline text-sm">
             {t.viewAll}
           </Link>
         </div>
@@ -193,7 +193,7 @@ export default function HomeClient({ games, categories, siteSettings, lang = 'en
               <h2 className="font-headline-lg text-headline-lg text-on-surface">
                 {sectionTitle}
               </h2>
-              <Link href={`/${lang}/category/${getCategorySlug(cat.name)}`} className="text-primary font-bold hover:underline text-sm">
+              <Link href={getLocalizedPath(lang, 'category', getCategorySlug(cat.name))} className="text-primary font-bold hover:underline text-sm">
                 {t.viewAll}
               </Link>
             </div>
@@ -202,7 +202,7 @@ export default function HomeClient({ games, categories, siteSettings, lang = 'en
               {catGames.map((game) => {
                 const gameTitle = lang === 'fr' ? game.title_fr || game.title : lang === 'es' ? game.title_es || game.title : game.title;
                 return (
-                  <Link key={game.id} href={`/${lang}/game/${game.slug}`} className="group cursor-pointer block">
+                  <Link key={game.id} href={getLocalizedPath(lang, 'game', game.slug)} className="group cursor-pointer block">
                     <div className="relative aspect-square rounded-xl overflow-hidden mb-2 shadow-sm border border-outline-variant/10 group-hover:scale-105 group-hover:shadow-[4px_4px_0px_0px_rgba(0,92,172,0.3)] transition-all duration-200">
                       <Image className="object-cover" src={game.thumbnail} alt={gameTitle} fill sizes="(max-width: 768px) 50vw, 16vw" />
                     </div>

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useUserGames } from '@/hooks/useUserGames';
+import { getLocalizedPath } from '@/lib/translations';
 
 interface GameCardProps {
   id: string;
@@ -58,7 +59,7 @@ export default function GameCard({ id, title, thumbnail, category, rating = 4.5,
   };
 
   return (
-    <Link href={`/${lang}/game/${id}`} className="block group relative">
+    <Link href={getLocalizedPath(lang, 'game', id)} className="block group relative">
       <article className="relative aspect-[4/3] rounded-xl overflow-hidden bg-surface-container shadow-sm border border-outline-variant/10 hover:shadow-[6px_6px_0px_0px_rgba(0,92,172,0.3)] hover:border-primary/20 hover:scale-[1.02] transition-all duration-200 cursor-pointer active:scale-95">
         
         {/* Thumbnail Image */}

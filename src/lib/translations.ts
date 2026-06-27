@@ -181,3 +181,47 @@ export function getTranslation(lang: string = 'en') {
   const currentLang = (translations[lang as Locale] ? lang : 'en') as Locale;
   return translations[currentLang];
 }
+
+export function getLocalizedPath(
+  lang: string,
+  type: 'home' | 'category' | 'game' | 'new' | 'trending' | 'categories',
+  slug?: string
+): string {
+  const mapping: Record<Locale, Record<string, string>> = {
+    en: {
+      home: '',
+      category: 'category',
+      game: 'game',
+      new: 'new',
+      trending: 'trending',
+      categories: 'categories',
+    },
+    fr: {
+      home: '',
+      category: 'categorie',
+      game: 'jeu',
+      new: 'nouveaux',
+      trending: 'tendances',
+      categories: 'categories',
+    },
+    es: {
+      home: '',
+      category: 'categoria',
+      game: 'juego',
+      new: 'nuevos',
+      trending: 'tendencias',
+      categories: 'categorias',
+    },
+  };
+
+  const l = (mapping[lang as Locale] ? lang : 'en') as Locale;
+  const prefix = mapping[l][type];
+
+  if (type === 'home') {
+    return `/${l}`;
+  }
+  if (type === 'category' || type === 'game') {
+    return `/${l}/${prefix}/${slug || ''}`;
+  }
+  return `/${l}/${prefix}`;
+}

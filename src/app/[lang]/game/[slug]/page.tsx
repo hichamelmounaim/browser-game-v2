@@ -4,7 +4,7 @@ import Footer from '@/components/Footer';
 import GamePlayer from '@/components/GamePlayer';
 import GameTracker from '@/components/GameTracker';
 import GameActions from '@/components/GameActions';
-import { getTranslation } from '@/lib/translations';
+import { getTranslation, getLocalizedPath } from '@/lib/translations';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import Link from 'next/link';
@@ -52,12 +52,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: 'website',
     },
     alternates: {
-      canonical: `${baseUrl}/${lang}/game/${resolvedParams.slug}`,
+      canonical: `${baseUrl}${getLocalizedPath(lang, 'game', resolvedParams.slug)}`,
       languages: {
-        en: `${baseUrl}/en/game/${resolvedParams.slug}`,
-        fr: `${baseUrl}/fr/game/${resolvedParams.slug}`,
-        es: `${baseUrl}/es/game/${resolvedParams.slug}`,
-        'x-default': `${baseUrl}/en/game/${resolvedParams.slug}`,
+        en: `${baseUrl}${getLocalizedPath('en', 'game', resolvedParams.slug)}`,
+        fr: `${baseUrl}${getLocalizedPath('fr', 'game', resolvedParams.slug)}`,
+        es: `${baseUrl}${getLocalizedPath('es', 'game', resolvedParams.slug)}`,
+        'x-default': `${baseUrl}${getLocalizedPath('en', 'game', resolvedParams.slug)}`,
       },
     },
   };
@@ -160,7 +160,7 @@ export default async function GamePage({ params }: Props) {
             "name": displayTitle,
             "description": description || `Play ${displayTitle} online for free on ${siteSettings.site_name}.`,
             "image": game.thumbnail,
-            "url": `${baseUrl}/${lang}/game/${game.slug}`,
+            "url": `${baseUrl}${getLocalizedPath(lang, 'game', game.slug)}`,
             "genre": game.category,
             "applicationCategory": "Game",
             "operatingSystem": "Web Browser",
@@ -191,19 +191,19 @@ export default async function GamePage({ params }: Props) {
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Home",
-                "item": `${baseUrl}/${lang}`
+                "item": `${baseUrl}${getLocalizedPath(lang, 'home')}`
               },
               {
                 "@type": "ListItem",
                 "position": 2,
                 "name": game.category || 'Uncategorized',
-                "item": `${baseUrl}/${lang}/category/${getCategorySlug(game.category || 'Uncategorized')}`
+                "item": `${baseUrl}${getLocalizedPath(lang, 'category', getCategorySlug(game.category || 'Uncategorized'))}`
               },
               {
                 "@type": "ListItem",
                 "position": 3,
                 "name": displayTitle,
-                "item": `${baseUrl}/${lang}/game/${game.slug}`
+                "item": `${baseUrl}${getLocalizedPath(lang, 'game', game.slug)}`
               }
             ]
           })
@@ -254,7 +254,7 @@ export default async function GamePage({ params }: Props) {
             {/* Grid of recommended games below the player */}
             <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2 mt-2">
                {recommendedGames.map((g: any) => (
-                 <Link href={`/${lang}/game/${g.slug}`} key={g.id} className="relative aspect-square rounded-xl overflow-hidden group border border-outline-variant/10 bg-surface-container-low">
+                 <Link href={getLocalizedPath(lang, 'game', g.slug)} key={g.id} className="relative aspect-square rounded-xl overflow-hidden group border border-outline-variant/10 bg-surface-container-low">
                    <Image src={g.thumbnail} alt={g.title} fill sizes="(max-width: 640px) 25vw, 12vw" className="object-cover group-hover:scale-110 transition-transform" />
                  </Link>
                ))}
@@ -267,7 +267,7 @@ export default async function GamePage({ params }: Props) {
                 <Image src={game.thumbnail} alt={displayTitle} width={160} height={160} className="w-full md:w-40 md:h-40 rounded-2xl object-cover shadow-sm hidden md:block" />
                 <div className="flex-1">
                    <div className="text-[10px] sm:text-xs font-bold text-primary mb-2 uppercase tracking-wider">
-                     <Link href={`/${lang}`} className="hover:underline">GAMES</Link> <span className="text-on-surface-variant/50 mx-1">&gt;</span> <Link href={`/${lang}/category/${getCategorySlug(game.category || 'Uncategorized')}`} className="hover:underline">{game.category || 'UNCATEGORIZED'}</Link>
+                     <Link href={getLocalizedPath(lang, 'home')} className="hover:underline">GAMES</Link> <span className="text-on-surface-variant/50 mx-1">&gt;</span> <Link href={getLocalizedPath(lang, 'category', getCategorySlug(game.category || 'Uncategorized'))} className="hover:underline">{game.category || 'UNCATEGORIZED'}</Link>
                    </div>
                    <h2 className="text-2xl sm:text-3xl font-extrabold text-on-surface leading-tight">{displayTitle}</h2>
                    <div className="text-sm font-bold text-on-surface-variant mt-1">by {game.developer || "Z & K Games"}</div>
@@ -375,24 +375,24 @@ export default async function GamePage({ params }: Props) {
               <div className="mt-10">
                 <div className="flex justify-between items-center mb-4">
                   <h3 className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-on-surface-variant">{t.relatedCategories || "Related categories"}</h3>
-                  <Link href={`/${lang}/categories`} className="text-xs font-bold text-primary hover:underline flex items-center gap-1">SHOW MORE <span className="material-symbols-outlined text-sm">add</span></Link>
+                  <Link href={getLocalizedPath(lang, 'categories')} className="text-xs font-bold text-primary hover:underline flex items-center gap-1">SHOW MORE <span className="material-symbols-outlined text-sm">add</span></Link>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  <Link href={`/${lang}/category/action`} className="text-xs font-bold px-4 py-2.5 bg-surface-container rounded-full hover:bg-primary-container text-on-surface hover:text-primary transition-colors uppercase tracking-wide">ACTION GAMES</Link>
-                  <Link href={`/${lang}/category/funny`} className="text-xs font-bold px-4 py-2.5 bg-surface-container rounded-full hover:bg-primary-container text-on-surface hover:text-primary transition-colors uppercase tracking-wide">FUNNY GAMES</Link>
-                  <Link href={`/${lang}/category/3d`} className="text-xs font-bold px-4 py-2.5 bg-surface-container rounded-full hover:bg-primary-container text-on-surface hover:text-primary transition-colors uppercase tracking-wide">3D GAMES</Link>
-                  <Link href={`/${lang}/categories`} className="text-xs font-bold px-4 py-2.5 text-primary hover:underline transition-colors flex items-center gap-1 uppercase tracking-wide">{t.allGenres || "ALL GAMES"} <span className="material-symbols-outlined text-sm">open_in_new</span></Link>
+                  <Link href={getLocalizedPath(lang, 'category', 'action')} className="text-xs font-bold px-4 py-2.5 bg-surface-container rounded-full hover:bg-primary-container text-on-surface hover:text-primary transition-colors uppercase tracking-wide">ACTION GAMES</Link>
+                  <Link href={getLocalizedPath(lang, 'category', 'funny')} className="text-xs font-bold px-4 py-2.5 bg-surface-container rounded-full hover:bg-primary-container text-on-surface hover:text-primary transition-colors uppercase tracking-wide">FUNNY GAMES</Link>
+                  <Link href={getLocalizedPath(lang, 'category', '3d')} className="text-xs font-bold px-4 py-2.5 bg-surface-container rounded-full hover:bg-primary-container text-on-surface hover:text-primary transition-colors uppercase tracking-wide">3D GAMES</Link>
+                  <Link href={getLocalizedPath(lang, 'categories')} className="text-xs font-bold px-4 py-2.5 text-primary hover:underline transition-colors flex items-center gap-1 uppercase tracking-wide">{t.allGenres || "ALL GAMES"} <span className="material-symbols-outlined text-sm">open_in_new</span></Link>
                 </div>
               </div>
 
               <div className="mt-10 mb-8">
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="text-lg font-bold text-on-surface">More games by this developer</h3>
-                  <Link href={`/${lang}/categories`} className="text-xs font-bold text-primary hover:underline flex items-center gap-1">SHOW MORE <span className="material-symbols-outlined text-sm">add</span></Link>
+                  <Link href={getLocalizedPath(lang, 'categories')} className="text-xs font-bold text-primary hover:underline flex items-center gap-1">SHOW MORE <span className="material-symbols-outlined text-sm">add</span></Link>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   {developerGames.map((g: any) => (
-                    <Link href={`/${lang}/game/${g.slug}`} key={g.id} className="relative aspect-video sm:aspect-square rounded-2xl overflow-hidden group shadow-sm border border-outline-variant/10">
+                    <Link href={getLocalizedPath(lang, 'game', g.slug)} key={g.id} className="relative aspect-video sm:aspect-square rounded-2xl overflow-hidden group shadow-sm border border-outline-variant/10">
                       <Image src={g.thumbnail} alt={g.title} fill sizes="(max-width: 640px) 50vw, 25vw" className="object-cover group-hover:scale-110 transition-transform duration-300" />
                     </Link>
                   ))}
@@ -405,7 +405,7 @@ export default async function GamePage({ params }: Props) {
           <aside className="lg:col-span-1 flex flex-col gap-2 w-full pt-1 lg:pt-0">
             <div className="grid grid-cols-4 lg:grid-cols-2 gap-2">
               {sidebarGames.map((g: any) => (
-                <Link href={`/${lang}/game/${g.slug}`} key={g.id} className="relative aspect-square rounded-xl overflow-hidden group border border-outline-variant/10 bg-surface-container-low">
+                <Link href={getLocalizedPath(lang, 'game', g.slug)} key={g.id} className="relative aspect-square rounded-xl overflow-hidden group border border-outline-variant/10 bg-surface-container-low">
                   <Image src={g.thumbnail} alt={g.title} fill sizes="(max-width: 1024px) 25vw, 50vw" className="object-cover group-hover:scale-110 transition-transform duration-300" />
                 </Link>
               ))}

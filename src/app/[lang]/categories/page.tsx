@@ -1,7 +1,7 @@
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { getAllGames, getAllCategories, getSiteSettings } from '@/lib/db';
-import { getTranslation } from '@/lib/translations';
+import { getTranslation, getLocalizedPath } from '@/lib/translations';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import Image from 'next/image';
@@ -20,12 +20,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: t.categoriesSeoTitle.replace('Gamecis.com', settings.site_name),
     description: t.categoriesSeoDescription.replace('Gamecis.com', settings.site_name),
     alternates: {
-      canonical: `${baseUrl}/${lang}/categories`,
+      canonical: `${baseUrl}${getLocalizedPath(lang, 'categories')}`,
       languages: {
-        en: `${baseUrl}/en/categories`,
-        fr: `${baseUrl}/fr/categories`,
-        es: `${baseUrl}/es/categories`,
-        'x-default': `${baseUrl}/en/categories`,
+        en: `${baseUrl}${getLocalizedPath('en', 'categories')}`,
+        fr: `${baseUrl}${getLocalizedPath('fr', 'categories')}`,
+        es: `${baseUrl}${getLocalizedPath('es', 'categories')}`,
+        'x-default': `${baseUrl}${getLocalizedPath('en', 'categories')}`,
       },
     },
   };
@@ -75,7 +75,7 @@ export default async function CategoriesPage({ params }: Props) {
               catDisplayName = catDisplayName.charAt(0).toUpperCase() + catDisplayName.slice(1);
               
               return (
-                <Link key={category.id} href={`/${lang}/category/${category.slug}`} className="block group">
+                <Link key={category.id} href={getLocalizedPath(lang, 'category', category.slug)} className="block group">
                   <div className="relative h-44 rounded-2xl overflow-hidden bg-surface-container shadow-sm border border-outline-variant/10 hover:shadow-[6px_6px_0px_0px_rgba(0,92,172,0.3)] hover:border-primary/20 hover:scale-[1.02] transition-all duration-200 cursor-pointer active:scale-95">
                     
                     {/* Background Category Thumbnail */}

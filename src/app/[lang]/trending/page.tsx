@@ -2,7 +2,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import GameCard from '@/components/GameCard';
 import { getAllGames, getSiteSettings } from '@/lib/db';
-import { getTranslation } from '@/lib/translations';
+import { getTranslation, getLocalizedPath } from '@/lib/translations';
 import type { Metadata } from 'next';
 
 type Props = {
@@ -19,12 +19,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: t.trendingSeoTitle.replace('Gamecis.com', settings.site_name),
     description: t.trendingSeoDescription.replace('Gamecis.com', settings.site_name),
     alternates: {
-      canonical: `${baseUrl}/${lang}/trending`,
+      canonical: `${baseUrl}${getLocalizedPath(lang, 'trending')}`,
       languages: {
-        en: `${baseUrl}/en/trending`,
-        fr: `${baseUrl}/fr/trending`,
-        es: `${baseUrl}/es/trending`,
-        'x-default': `${baseUrl}/en/trending`,
+        en: `${baseUrl}${getLocalizedPath('en', 'trending')}`,
+        fr: `${baseUrl}${getLocalizedPath('fr', 'trending')}`,
+        es: `${baseUrl}${getLocalizedPath('es', 'trending')}`,
+        'x-default': `${baseUrl}${getLocalizedPath('en', 'trending')}`,
       },
     },
   };

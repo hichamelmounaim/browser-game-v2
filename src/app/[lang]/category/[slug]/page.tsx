@@ -2,7 +2,7 @@ import { getAllGames, getCategoryBySlug, getSiteSettings } from '@/lib/db';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import GameCard from '@/components/GameCard';
-import { getTranslation } from '@/lib/translations';
+import { getTranslation, getLocalizedPath } from '@/lib/translations';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
@@ -50,12 +50,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: 'website',
     },
     alternates: {
-      canonical: `${baseUrl}/${lang}/category/${resolvedParams.slug}`,
+      canonical: `${baseUrl}${getLocalizedPath(lang, 'category', resolvedParams.slug)}`,
       languages: {
-        en: `${baseUrl}/en/category/${resolvedParams.slug}`,
-        fr: `${baseUrl}/fr/category/${resolvedParams.slug}`,
-        es: `${baseUrl}/es/category/${resolvedParams.slug}`,
-        'x-default': `${baseUrl}/en/category/${resolvedParams.slug}`,
+        en: `${baseUrl}${getLocalizedPath('en', 'category', resolvedParams.slug)}`,
+        fr: `${baseUrl}${getLocalizedPath('fr', 'category', resolvedParams.slug)}`,
+        es: `${baseUrl}${getLocalizedPath('es', 'category', resolvedParams.slug)}`,
+        'x-default': `${baseUrl}${getLocalizedPath('en', 'category', resolvedParams.slug)}`,
       },
     },
   };
@@ -138,13 +138,13 @@ export default async function CategoryPage({ params }: Props) {
                   "@type": "ListItem",
                   "position": 1,
                   "name": "Home",
-                  "item": `${baseUrl}/${lang}`
+                  "item": `${baseUrl}${getLocalizedPath(lang, 'home')}`
                 },
                 {
                   "@type": "ListItem",
                   "position": 2,
                   "name": categoryName,
-                  "item": `${baseUrl}/${lang}/category/${resolvedParams.slug}`
+                  "item": `${baseUrl}${getLocalizedPath(lang, 'category', resolvedParams.slug)}`
                 }
               ]
             },
@@ -153,7 +153,7 @@ export default async function CategoryPage({ params }: Props) {
               "@type": "CollectionPage",
               "name": categoryName,
               "description": seoDesc || `${t.descriptionFallback.replace('Gamecis.com', siteSettings.site_name)}`,
-              "url": `${baseUrl}/${lang}/category/${resolvedParams.slug}`,
+              "url": `${baseUrl}${getLocalizedPath(lang, 'category', resolvedParams.slug)}`,
               "about": {
                 "@type": "Thing",
                 "name": `${categoryName} Games`
@@ -169,7 +169,7 @@ export default async function CategoryPage({ params }: Props) {
           
           {/* Navigation Breadcrumbs */}
           <div className="mb-6 flex items-center gap-2 text-sm text-gray-600 font-medium bg-white/60 backdrop-blur-sm px-4 py-2 rounded-full w-fit border border-white/20">
-            <Link href={`/${lang}`} className="hover:text-teal-600 transition-colors flex items-center">
+            <Link href={getLocalizedPath(lang, 'home')} className="hover:text-teal-600 transition-colors flex items-center">
               <span className="material-symbols-outlined text-base mr-1">home</span> {t.home}
             </Link>
             <span className="material-symbols-outlined text-xs text-gray-400">chevron_right</span>
@@ -266,7 +266,7 @@ export default async function CategoryPage({ params }: Props) {
                       {popularGames.map((game, index) => (
                         <tr key={game.id} className="hover:bg-teal-50/50 transition-colors">
                           <td className="p-3 font-medium text-gray-800">
-                            <Link href={`/${lang}/game/${game.slug}`} className="hover:text-teal-600 flex items-center gap-2">
+                            <Link href={getLocalizedPath(lang, 'game', game.slug)} className="hover:text-teal-600 flex items-center gap-2">
                               <span className="text-xs font-mono text-gray-400">#{index + 1}</span>
                               <span className="truncate max-w-[150px]">{game.title}</span>
                             </Link>

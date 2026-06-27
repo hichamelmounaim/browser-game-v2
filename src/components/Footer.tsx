@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { getLocalizedPath } from '@/lib/translations';
 
 export default function Footer({ siteSettings, lang = 'en' }: { siteSettings?: { site_name: string; site_logo: string }; lang?: string }) {
   const brandName = siteSettings?.site_name || 'Gamecis';
@@ -29,10 +30,10 @@ export default function Footer({ siteSettings, lang = 'en' }: { siteSettings?: {
         <div className="flex flex-col gap-4 text-left md:pl-8">
           <h4 className="font-bold text-primary text-sm">{lang === 'fr' ? 'Jeux populaires' : lang === 'es' ? 'Juegos populares' : 'Popular Games'}</h4>
           <nav className="flex flex-col gap-2 text-xs text-on-surface-variant font-medium">
-            <Link className="hover:text-tertiary transition-colors" href={`/${lang}/new`}>{lang === 'fr' ? 'Nouveaux jeux' : lang === 'es' ? 'Juegos nuevos' : 'New Games'}</Link>
-            <Link className="hover:text-tertiary transition-colors" href={`/${lang}/trending`}>{lang === 'fr' ? 'Jeux populaires' : lang === 'es' ? 'Juegos populares' : 'Popular Games'}</Link>
-            <Link className="hover:text-tertiary transition-colors" href={`/${lang}/category/arcade`}>{lang === 'fr' ? 'Jeux d\'arcade' : lang === 'es' ? 'Juegos de arcade' : 'Arcade Games'}</Link>
-            <Link className="hover:text-tertiary transition-colors" href={`/${lang}/category/action`}>{lang === 'fr' ? 'Jeux d\'action' : lang === 'es' ? 'Juegos de acción' : 'Action Games'}</Link>
+            <Link className="hover:text-tertiary transition-colors" href={getLocalizedPath(lang, 'new')}>{lang === 'fr' ? 'Nouveaux jeux' : lang === 'es' ? 'Juegos nuevos' : 'New Games'}</Link>
+            <Link className="hover:text-tertiary transition-colors" href={getLocalizedPath(lang, 'trending')}>{lang === 'fr' ? 'Jeux populaires' : lang === 'es' ? 'Juegos populares' : 'Popular Games'}</Link>
+            <Link className="hover:text-tertiary transition-colors" href={getLocalizedPath(lang, 'category', 'arcade')}>{lang === 'fr' ? 'Jeux d\'arcade' : lang === 'es' ? 'Juegos de arcade' : 'Arcade Games'}</Link>
+            <Link className="hover:text-tertiary transition-colors" href={getLocalizedPath(lang, 'category', 'action')}>{lang === 'fr' ? 'Jeux d\'action' : lang === 'es' ? 'Juegos de acción' : 'Action Games'}</Link>
           </nav>
         </div>
 

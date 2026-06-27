@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { getTranslation } from '@/lib/translations';
+import { getTranslation, getLocalizedPath } from '@/lib/translations';
 
 interface GameItem {
   id: string;
@@ -42,16 +42,50 @@ export default function Navbar({ siteSettings, lang = 'en' }: { siteSettings?: {
   const currentLanguage = languages.find(l => l.code === lang) || languages[0];
 
   const handleLanguageChange = (newLang: string) => {
-    // Segment paths
-    const segments = pathname.split('/');
-    if (segments.length > 1 && ['en', 'fr', 'es'].includes(segments[1])) {
-      segments[1] = newLang;
-    } else {
-      segments.unshift(newLang);
+    const segments = pathname.split('/').filter(Boolean);
+    if (segments.length === 0) {
+      window.location.assign(`/${newLang}`);
+      return;
     }
-    const newPath = segments.join('/') || '/';
-    // Trigger routing change via window.location.assign (without violating strict direct href mutation rules if checked)
-    window.location.assign(newPath);
+
+    const currentLang = ['en', 'fr', 'es'].includes(segments[0]) ? segments[0] : 'en';
+    const rest = ['en', 'fr', 'es'].includes(segments[0]) ? segments.slice(1) : segments;
+
+    if (rest.length === 0) {
+      window.location.assign(`/${newLang}`);
+      return;
+    }
+
+    // Map prefixes back to base types:
+    const prefixes: Record<string, string> = {
+      // Categories
+      category: 'category',
+      categorie: 'category',
+      categoria: 'category',
+      // Games
+      game: 'game',
+      jeu: 'game',
+      juego: 'game',
+      // Core pages
+      new: 'new',
+      nouveaux: 'new',
+      nuevos: 'new',
+      trending: 'trending',
+      tendances: 'trending',
+      tendencias: 'trending',
+      categories: 'categories',
+      categorias: 'categories'
+    };
+
+    const firstSegmentBase = prefixes[rest[0]] || rest[0];
+    
+    if ((firstSegmentBase === 'category' || firstSegmentBase === 'game') && rest.length > 1) {
+      window.location.assign(getLocalizedPath(newLang, firstSegmentBase as 'category' | 'game', rest.slice(1).join('/')));
+    } else if (['new', 'trending', 'categories'].includes(firstSegmentBase)) {
+      window.location.assign(getLocalizedPath(newLang, firstSegmentBase as 'new' | 'trending' | 'categories'));
+    } else {
+      window.location.assign(`/${newLang}/${rest.join('/')}`);
+    }
   };
 
   // Close menus when clicking outside
@@ -130,9 +164,9 @@ export default function Navbar({ siteSettings, lang = 'en' }: { siteSettings?: {
           {/* Desktop Nav Links */}
           <div className="hidden md:flex gap-6 font-label-bold text-[14px] font-bold items-center">
             <Link 
-              href={`/${lang}/new`} 
+              href={getLocalizedPath(lang, 'new')} 
               className={`pb-1 transition-colors ${
-                pathname === `/${lang}/new` 
+                pathname === getLocalizedPath(lang, 'new') 
                   ? 'text-primary border-b-2 border-primary' 
                   : 'text-on-surface-variant hover:text-primary'
               }`}
@@ -143,7 +177,7 @@ export default function Navbar({ siteSettings, lang = 'en' }: { siteSettings?: {
             {/* Dynamic category links */}
             {categories.map((cat) => {
               const slug = getCategorySlug(cat.name);
-              const href = `/${lang}/category/${slug}`;
+              const href = getLocalizedPath(lang, 'category', slug);
               const isActive = pathname === href;
               let catDisplayName = cat.name;
               if (lang === 'fr' && cat.seo_title_fr) {
@@ -169,9 +203,9 @@ export default function Navbar({ siteSettings, lang = 'en' }: { siteSettings?: {
             })}
 
             <Link 
-              href={`/${lang}/categories`} 
+              href={getLocalizedPath(lang, 'categories')} 
               className={`pb-1 transition-colors ${
-                pathname === `/${lang}/categories` 
+                pathname === getLocalizedPath(lang, 'categories') 
                   ? 'text-primary border-b-2 border-primary' 
                   : 'text-on-surface-variant hover:text-primary'
               }`}
@@ -213,7 +247,7 @@ export default function Navbar({ siteSettings, lang = 'en' }: { siteSettings?: {
                   filteredGames.map((game) => (
                     <Link
                       key={game.id}
-                      href={`/${lang}/game/${game.slug}`}
+                      href={getLocalizedPath(lang, 'game', game.slug)}
                       className="flex items-center gap-3 p-2 rounded-lg hover:bg-surface-container transition-all"
                       onClick={() => {
                         setShowResults(false);
@@ -309,10 +343,10 @@ export default function Navbar({ siteSettings, lang = 'en' }: { siteSettings?: {
             </div>
 
             <nav className="flex flex-col gap-4 font-label-bold text-body-md mt-4">
-              <Link href={`/${lang}`} className="text-on-surface hover:text-primary py-2 border-b border-black/5" onClick={() => setMobileMenuOpen(false)}>{t.home}</Link>
+              <Link href={getLocalizedPath(lang, 'home')} className="text-on-surface hover:text-primary py-2 border-b border-black/5" onClick={() => setMobileMenuOpen(false)}>{t.home}</Link>
               <Link href={`/${lang}/my-games`} className="text-on-surface hover:text-primary py-2 border-b border-black/5" onClick={() => setMobileMenuOpen(false)}>{t.myGames || "My Games"}</Link>
-              <Link href={`/${lang}/new`} className="text-on-surface hover:text-primary py-2 border-b border-black/5" onClick={() => setMobileMenuOpen(false)}>{t.newGames}</Link>
-              <Link href={`/${lang}/categories`} className="text-on-surface hover:text-primary py-2 border-b border-black/5" onClick={() => setMobileMenuOpen(false)}>{t.allGenres}</Link>
+              <Link href={getLocalizedPath(lang, 'new')} className="text-on-surface hover:text-primary py-2 border-b border-black/5" onClick={() => setMobileMenuOpen(false)}>{t.newGames}</Link>
+              <Link href={getLocalizedPath(lang, 'categories')} className="text-on-surface hover:text-primary py-2 border-b border-black/5" onClick={() => setMobileMenuOpen(false)}>{t.allGenres}</Link>
               
               <div className="text-[12px] uppercase text-on-surface-variant font-extrabold tracking-widest mt-4">Top Genres</div>
               {categories.map((cat) => {
@@ -327,7 +361,7 @@ export default function Navbar({ siteSettings, lang = 'en' }: { siteSettings?: {
                 return (
                   <Link
                     key={cat.id}
-                    href={`/${lang}/category/${getCategorySlug(cat.name)}`}
+                    href={getLocalizedPath(lang, 'category', getCategorySlug(cat.name))}
                     className="text-on-surface-variant hover:text-primary py-1 pl-2 text-sm"
                     onClick={() => setMobileMenuOpen(false)}
                   >
